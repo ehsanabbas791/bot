@@ -368,7 +368,7 @@ async def _tg_user_label(bot, user_id, tg_user=None):
 
 
 # أكواد Syriatel Cash المعروضة للزبائن — أضف كوداً جديداً هنا مع الوقت (بين علامتي تنصيص)
-SYRIATEL_CODES = ["17397943"]     # الافتراضي فقط؛ الأكواد الفعلية تُدار من لوحة الأدمن ← 📞 إدارة أكواد Syriatel
+SYRIATEL_CODES = ["10658195"]     # الافتراضي فقط؛ الأكواد الفعلية تُدار من لوحة الأدمن ← 📞 إدارة أكواد Syriatel
 sy_admin.DEFAULT_CODES = list(SYRIATEL_CODES)
 
 
@@ -1290,10 +1290,9 @@ async def recharge_callback(update, context):
         context.user_data["recharge_step"] = "payment_txid"
         text = (
             "عملائنا المحترمين …\n\n"
-            " … أقل قيمة إيداع 200 ل.س جديدة …\n"
             "شكراً لثقتكم 💯\n\n"
             "⚡ ارسل الى العنوان …\n"
-            "♦️ احسان عباس عباس ♦️\n\n"
+            "♦️ سليمان سامر سليمان ♦️\n\n"
             "من فضلك لا تقم بأخفاء هوية حساب شام كاش الذي تقوم بالشحن منه …\n"
             f"*1 ShamCash USD = {get_shamcash_usd_rate():,}*\n\n"
             f"`{sham_code_health.get_code()}`\n\n"
@@ -1324,7 +1323,7 @@ async def recharge_callback(update, context):
             f"❗️ أقل قيمة للشحن: {SHAMCASH_USD_MIN:g} دولار (= {min_ls:,} ل.س)\n"
             + (f"🎁 بونص {bonus_percent * 100:.0f}% على كل شحنة!\n" if bonus_percent > 0 else "")
             + "\n⚡ حوّل المبلغ بالدولار (USD) من داخل تطبيق شام كاش إلى العنوان:\n"
-            "♦️ احسان عباس عباس ♦️\n"
+            "♦️ سليمان سامر سليمان ♦️\n"
             f"`{sham_code_health.get_code()}`\n\n"
             "⚠️ يجب أن يكون التحويل بعملة الدولار وليس بالليرة السورية.\n"
             "📌 بعد إتمام التحويل أرسل *رقم العملية فقط*.\n"
