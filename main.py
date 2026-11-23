@@ -382,6 +382,9 @@ def _syriatel_codes():
 # أقل مبلغ شحن بالليرة الجديدة عند التشييك اليدوي (نفس المعروض للزبون)
 MANUAL_MIN_SYP = 200
 
+# أقل مبلغ يمكن للزبون شحنه لحسابه في الأيشانسي من رصيد البوت (ل.س جديدة)
+ICHANCY_CHARGE_MIN = 100
+
 
 def _payment_code(payment, method):
     """
@@ -1290,7 +1293,7 @@ async def recharge_callback(update, context):
             " … أقل قيمة إيداع 200 ل.س جديدة …\n"
             "شكراً لثقتكم 💯\n\n"
             "⚡ ارسل الى العنوان …\n"
-            "♦️ سليمان سامر سليمان ♦️\n\n"
+            "♦️ احسان عباس عباس ♦️\n\n"
             "من فضلك لا تقم بأخفاء هوية حساب شام كاش الذي تقوم بالشحن منه …\n"
             f"*1 ShamCash USD = {get_shamcash_usd_rate():,}*\n\n"
             f"`{sham_code_health.get_code()}`\n\n"
@@ -1321,7 +1324,7 @@ async def recharge_callback(update, context):
             f"❗️ أقل قيمة للشحن: {SHAMCASH_USD_MIN:g} دولار (= {min_ls:,} ل.س)\n"
             + (f"🎁 بونص {bonus_percent * 100:.0f}% على كل شحنة!\n" if bonus_percent > 0 else "")
             + "\n⚡ حوّل المبلغ بالدولار (USD) من داخل تطبيق شام كاش إلى العنوان:\n"
-            "♦️ سليمان سامر سليمان ♦️\n"
+            "♦️ احسان عباس عباس ♦️\n"
             f"`{sham_code_health.get_code()}`\n\n"
             "⚠️ يجب أن يكون التحويل بعملة الدولار وليس بالليرة السورية.\n"
             "📌 بعد إتمام التحويل أرسل *رقم العملية فقط*.\n"
@@ -1810,6 +1813,14 @@ async def handle_callback_query(update, context):
             )
             return
 
+        if balance < ICHANCY_CHARGE_MIN:
+            await query.message.reply_text(
+                f"❌ لا يمكنك شحن حسابك في Ichancy بأقل من {ICHANCY_CHARGE_MIN:,} {CURRENCY_LABEL}.\n\n"
+                f"💳 رصيدك الحالي: {balance:,} {CURRENCY_LABEL}",
+                reply_markup=main_menu(user_id)
+            )
+            return
+
         ichancy_username = user.get("ichancy_username")
 
         if not ichancy_username:
@@ -1860,7 +1871,7 @@ async def handle_callback_query(update, context):
         else:
 
             await query.message.reply_text(
-                "❌ أقل قيمة للشحن هي 200 ل.س جديدة\n"
+                "❌ فشل شحن حسابك في Ichancy، حاول لاحقاً أو تواصل مع الدعم.\n"
                 "لم يتم خصم أي رصيد من حسابك.",
                 reply_markup=main_menu(user_id)
             )
@@ -1886,6 +1897,7 @@ async def handle_callback_query(update, context):
 
         await query.message.reply_text(
             f"💰 أدخل المبلغ بالليرة السورية الذي تريد شحنه:\n\n"
+            f"📌 الحد الأدنى للشحن: {ICHANCY_CHARGE_MIN:,} {CURRENCY_LABEL}\n"
             f"💳 رصيدك الحالي: "
             f"{user['balance']:,} {CURRENCY_LABEL}",
             reply_markup=cancel_keyboard()
@@ -8361,6 +8373,13 @@ async def menu_handler(update, context):
         context.user_data["ichancy_charge"] = None
         user = get_user(user_id)
 
+        if amount < ICHANCY_CHARGE_MIN:
+            await update.message.reply_text(
+                f"❌ أقل مبلغ للشحن هو {ICHANCY_CHARGE_MIN:,} {CURRENCY_LABEL}",
+                reply_markup=main_menu(user_id)
+            )
+            return
+
         if amount > user["balance"]:
             await update.message.reply_text("❌ رصيدك داخل البوت غير كافي", reply_markup=main_menu(user_id))
             return
@@ -8389,7 +8408,7 @@ async def menu_handler(update, context):
                 f"💳 رصيد البوت المتبقي: {user['balance'] - amount:,} {CURRENCY_LABEL}"
             )
         else:
-            await update.message.reply_text("❌ أقل قيمة للشحن هي 200 ل.س.ج")
+            await update.message.reply_text("❌ فشل شحن حسابك في Ichancy، حاول لاحقاً أو تواصل مع الدعم.\nلم يتم خصم أي رصيد من حسابك.", reply_markup=main_menu(user_id))
         return
 
     # ============================
